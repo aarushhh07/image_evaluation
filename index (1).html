@@ -543,7 +543,14 @@ let cfg      = {};
 let ranks    = {};   // cardPos → 'best'|'mid'|'worst'
 let skipCount = 0;
 let failQueue = []; // rows that failed to send — retried on done screen
-
+function preloadNext() {
+  if (cursor + 1 >= session.length) return;
+  const nextItem = session[cursor + 1];
+  nextItem.perm.forEach(i => {
+    const img = new Image();
+    img.src = GITHUB_BASE + `${SUBFOLDERS[i]}/${nextItem.filename}`;
+  });
+}
 // ════════════════════════════════════
 //  BOOT — fetch images.json
 // ════════════════════════════════════
@@ -678,6 +685,7 @@ function renderItem() {
 
   updateNextBtn();
   document.getElementById('save-ind').style.display = 'none';
+  preloadNext();
 }
 
 // ════════════════════════════════════
