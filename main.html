@@ -7,6 +7,66 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="styles.css" rel="stylesheet">
+<style>
+  /* ── BASELINE REFERENCE PANEL ── */
+  .baseline-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--s1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 12px 16px 12px 12px;
+    margin-bottom: 1.25rem;
+  }
+  .baseline-thumb {
+    width: 120px;
+    flex-shrink: 0;
+    aspect-ratio: 1;
+    background: var(--s2);
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .baseline-thumb img {
+    width: 100%; height: 100%;
+    object-fit: contain; display: block;
+    transition: opacity .3s;
+  }
+  .baseline-thumb img.loading { opacity: 0; }
+  .baseline-thumb img.loaded  { opacity: 1; }
+  .baseline-info { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+  .baseline-tag {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--amber);
+    background: rgba(251,191,36,.08);
+    border: 1px solid rgba(251,191,36,.2);
+    border-radius: 5px; padding: 2px 8px;
+    display: inline-block; width: fit-content;
+  }
+  .baseline-caption {
+    font-size: 12px; color: var(--muted); font-family: var(--mono);
+    line-height: 1.5;
+  }
+
+  /* ── PROMPT LABEL BADGE (in context bar) ── */
+  .prompt-type-badge {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--accent);
+    background: var(--accent-bg);
+    border: 1px solid rgba(110,231,183,.2);
+    border-radius: 5px; padding: 2px 8px;
+    white-space: nowrap; flex-shrink: 0;
+    display: none;
+  }
+
+  /* ── RESPONSIVE: stack baseline on mobile ── */
+  @media (max-width: 480px) {
+    .baseline-panel { flex-direction: column; }
+    .baseline-thumb { width: 100%; aspect-ratio: 16/7; }
+  }
+</style>
 </head>
 <body>
 
@@ -29,19 +89,25 @@
     </div>
 
     <div class="setup-heading">Image<br>Preference Study</div>
-    <div class="setup-sub">This is for a research project involving Shreyansh Modi, Akshat Tomar and Aarush Aggarwal. Kindly provide fair evaluations and refrain from spamming</div>
+    <div class="setup-sub">This is for a research project involving Shreyansh Modi, Akshat Tomar and Aarush Aggarwal. Kindly provide fair evaluations and refrain from spamming.</div>
+
+    <div class="info-pill">
+      <strong>How it works:</strong> You will see a <strong>baseline</strong> image for reference,
+      then choose between <strong>guided</strong> and <strong>patched</strong> variants across
+      three prompt types — <strong>PROMPT1</strong> (colors), <strong>PROMPT2</strong> (contrast), <strong>PROMPT3</strong> (sharper).
+    </div>
 
     <div class="stat-row">
       <div class="stat-box">
         <div class="stat-val" id="stat-n">—</div>
-        <div class="stat-lbl">Total triples</div>
+        <div class="stat-lbl">Total pairs</div>
       </div>
       <div class="stat-box">
         <div class="stat-val" id="stat-sess">50</div>
         <div class="stat-lbl">This session</div>
       </div>
       <div class="stat-box">
-        <div class="stat-val" id="stat-time">25</div>
+        <div class="stat-val" id="stat-time">3</div>
         <div class="stat-lbl">Est. minutes</div>
       </div>
     </div>
@@ -52,19 +118,10 @@
       <div class="field-hint">Used to track your responses in the sheet</div>
     </div>
 
-    <div class="field-row">
-      <div class="field">
-        <label>Task mode</label>
-        <select id="inp-mode">
-          <option value="rank3">Full rank (1st → 3rd)</option>
-          <option value="best">Pick best only</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Samples per session</label>
-        <input type="number" id="inp-count" value="50" min="5" max="500" />
-        <div class="field-hint">Recommended: 50</div>
-      </div>
+    <div class="field">
+      <label>Samples per session</label>
+      <input type="number" id="inp-count" value="50" min="5" max="500" />
+      <div class="field-hint">Recommended: 50</div>
     </div>
 
     <button class="btn-start" onclick="startSession()">Start Evaluation →</button>
@@ -85,12 +142,30 @@
       </div>
       <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
     </div>
-    
+    <div class="eh-right">
+      <span class="kbd">1</span><span class="kbd-hint">image A</span>
+      <span class="kbd" style="margin-left:6px">2</span><span class="kbd-hint">image B</span>
+      <span class="kbd" style="margin-left:6px">↵</span><span class="kbd-hint">next</span>
+    </div>
   </header>
 
   <div class="eval-body">
+
+    <!-- Baseline reference panel -->
+    <div class="baseline-panel" id="baseline-panel">
+      <div class="baseline-thumb">
+        <img id="baseline-img" src="" alt="Baseline reference" class="loading">
+      </div>
+      <div class="baseline-info">
+        <span class="baseline-tag">baseline</span>
+        <div class="baseline-caption">Reference image — not part of the comparison.<br>Use this as your quality anchor.</div>
+      </div>
+    </div>
+
+    <!-- Context bar with prompt label -->
     <div class="context-bar" id="ctx-bar" style="display:none">
       <span class="context-tag">Prompt</span>
+      <span class="prompt-type-badge" id="prompt-label-badge"></span>
       <span class="context-text" id="ctx-text"></span>
     </div>
 
@@ -129,7 +204,7 @@
     <div class="divider"></div>
 
     <div class="win-section">
-      <div class="win-section-title">Win rate by original position</div>
+      <div class="win-section-title">Guided vs Patched — preference rate</div>
       <div id="win-rows"></div>
     </div>
 
@@ -142,7 +217,6 @@
 </div>
 
 <div id="toast"></div>
-
 <script src="script.js"></script>
 </body>
 </html>
