@@ -2,13 +2,13 @@
 //  CONFIG — update these two constants
 // ════════════════════════════════════
 const SHEET_URL   = "https://script.google.com/macros/s/AKfycbwwCjiiXxZYsVENMlBbz3qHVmgvAOb7K8TVfHz833stLhxq9w1ans1XH-L3_T5xmOE/exec"; // ← paste your /exec URL
-const GITHUB_BASE = "./triplet_dataset_sharp_500/"; // ← your repo must end with a trailing slash
+const GITHUB_BASE = "./dataset/"; // ← your repo must end with a trailing slash
 
 // ════════════════════════════════════
 //  FOLDER CONFIGURATION
 // ════════════════════════════════════
 // These must match the folder names in your repository exactly.
-const SUBFOLDERS = ["baseline", "guided", "patched"]; 
+const SUBFOLDERS = ["baseline", "colors/guided", "colors/patched"]; 
 
 // ════════════════════════════════════
 //  PERMUTATION TABLE  (all 6 of [0,1,2])
