@@ -6,14 +6,14 @@
 <title>Human Image Evaluation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="styles.css" rel="stylesheet">
 </head>
 <body>
 
 <!-- ── LOADING ── -->
 <div id="s-loading" class="screen active">
   <div class="loading-inner">
-    <div class="loading-logo">Tri<span>Eval</span></div>
+    <div class="loading-logo">Human<span>Eval</span></div>
     <div class="spinner"></div>
     <div class="loading-msg" id="load-msg">Loading dataset…</div>
     <div id="load-err" class="loading-error" style="display:none"></div>
@@ -24,7 +24,7 @@
 <div id="s-setup" class="screen">
   <div class="setup-wrap">
     <div class="wordmark">
-      <div class="wordmark-name">Tri<span>Eval</span></div>
+      <div class="wordmark-name">Human<span>Eval</span></div>
       <div class="wordmark-badge">Human Evaluation</div>
     </div>
 
@@ -75,7 +75,7 @@
 <div id="s-eval" class="screen">
   <header class="eval-header">
     <div class="eh-left">
-      <div class="eh-logo">Tri<span>Eval</span></div>
+      <div class="eh-logo">Human<span>Eval</span></div>
       <div class="eh-rater" id="hdr-rater"></div>
     </div>
     <div class="eh-progress">
@@ -85,13 +85,7 @@
       </div>
       <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
     </div>
-    <div class="eh-right">
-      <span class="kbd">1</span><span class="kbd">2</span><span class="kbd">3</span>
-      <span class="kbd-hint">rank</span>
-      <span style="margin:0 4px;color:var(--dim)">|</span>
-      <span class="kbd">→</span>
-      <span class="kbd-hint">next</span>
-    </div>
+    
   </header>
 
   <div class="eval-body">
