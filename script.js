@@ -143,7 +143,7 @@ function renderItem() {
 
   // ── Question ──
   document.getElementById('eval-q').innerHTML =
-    `Which image is superior with respect to <em>higher/superior ${promptLabel}</em>?`;
+    `Which image is superior with respect to <em>higher/better ${promptLabel}</em>?`;
 
   // ── Baseline reference ──
   const baselineImg = document.getElementById('baseline-img');
