@@ -159,7 +159,7 @@ function renderItem() {
   ranks = {};
   const grid = document.getElementById('img-grid');
   grid.innerHTML = '';
-  grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+ 
 
   permuted.forEach((filepath, pos) => {
     const url         = GITHUB_BASE + filepath;
