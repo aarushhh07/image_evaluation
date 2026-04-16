@@ -10,7 +10,7 @@ const GITHUB_BASE = "./dataset/";
 //  baseline/ sits at dataset/baseline/
 // ════════════════════════════════════
 const PROMPT_TYPES  = ["colors", "contrast", "sharper"];
-const PROMPT_LABELS = ["PROMPT1", "PROMPT2", "PROMPT3"];
+const PROMPT_LABELS = ["color", "contrast", "sharpness"];
 const BASELINE_DIR  = "baseline";
 const VARIANTS      = ["guided", "patched"];
 
@@ -143,7 +143,7 @@ function renderItem() {
 
   // ── Question ──
   document.getElementById('eval-q').innerHTML =
-    `Which image is <em>better</em> for <em>${promptLabel}</em>?`;
+    `Which image has/is more <em>better</em> for <em>${promptLabel}</em>?`;
 
   // ── Baseline reference ──
   const baselineImg = document.getElementById('baseline-img');
