@@ -82,9 +82,10 @@
       </div>
       <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
     </div>
-    <div class="eh-right">
+   <div class="eh-right">
       <span class="kbd">1</span><span class="kbd-hint">image A</span>
       <span class="kbd" style="margin-left:6px">2</span><span class="kbd-hint">image B</span>
+      <span class="kbd" style="margin-left:6px">3</span><span class="kbd-hint">neither</span>
       <span class="kbd" style="margin-left:6px">↵</span><span class="kbd-hint">next</span>
     </div>
   </header>
@@ -122,6 +123,7 @@
       </div>
       <div class="actions-right">
         <button class="btn-skip" onclick="skipItem()">Skip</button>
+        <button class="btn-neither" id="btn-neither" onclick="assignNeither()">Neither</button>
         <button class="btn-next" id="btn-next" onclick="confirmAndNext()">Next →</button>
       </div>
     </div>

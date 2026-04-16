@@ -205,7 +205,14 @@ function assign(pos) {
   updateNextBtn();
 }
 
+function assignNeither() {
+  ranks = { 'neither': 'best' };
+  refreshCards();
+  updateNextBtn();
+}
+
 function refreshCards() {
+  // Update image cards
   document.querySelectorAll('.img-card').forEach(card => {
     const pos  = parseInt(card.dataset.pos);
     const rank = ranks[pos];
@@ -221,7 +228,17 @@ function refreshCards() {
       if (rank) btn.classList.add('on-best');
     });
   });
-}
+
+  // Update "Neither" button state
+  const btnNeither = document.getElementById('btn-neither');
+  if (btnNeither) {
+    if (ranks['neither']) {
+      btnNeither.classList.add('selected');
+    } else {
+      btnNeither.classList.remove('selected');
+    }
+  }
+} 
 
 function isComplete() {
   return Object.keys(ranks).length === 1;
@@ -242,9 +259,17 @@ async function confirmAndNext() {
   const cat         = item.category;
   const promptLabel = item.promptLabel || cat;
 
-  const preferredPos     = parseInt(Object.keys(ranks)[0]);
-  const preferredVariant = VARIANTS[perm[preferredPos]];   // 'guided' or 'patched'
-  const otherVariant     = VARIANTS[perm[preferredPos === 0 ? 1 : 0]];
+  const selectedKey = Object.keys(ranks)[0];
+  let prefDisplay = 'neither';
+  let prefVariant = 'neither';
+  let rejVariant  = 'both'; // If neither is preferred, both are rejected
+
+  if (selectedKey !== 'neither') {
+    const preferredPos = parseInt(selectedKey);
+    prefDisplay = ['A','B'][preferredPos];
+    prefVariant = VARIANTS[perm[preferredPos]];   // 'guided' or 'patched'
+    rejVariant  = VARIANTS[perm[preferredPos === 0 ? 1 : 0]];
+  }
 
   const row = {
     session_id:        cfg.sessionId,
@@ -261,16 +286,15 @@ async function confirmAndNext() {
     perm_order:        JSON.stringify(perm),
     display_A:         VARIANTS[perm[0]],
     display_B:         VARIANTS[perm[1]],
-    preferred_display: ['A','B'][preferredPos],
-    preferred_variant: preferredVariant,
-    rejected_variant:  otherVariant,
+    preferred_display: prefDisplay,
+    preferred_variant: prefVariant,
+    rejected_variant:  rejVariant,
   };
 
   results.push(row);
   saveRowToSheet(row);
 
   cursor++;
-  
   renderItem();
 }
 
@@ -341,6 +365,7 @@ document.addEventListener('keydown', e => {
 
   if      (e.key === '1') assign(0);
   else if (e.key === '2') assign(1);
+  else if (e.key === '3') assignNeither(); // NEW: Keyboard shortcut for Neither
   else if ((e.key === 'Enter' || e.key === 'ArrowRight') && isComplete()) confirmAndNext();
 });
 
