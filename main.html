@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Image Evaluation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylsheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── LOADING ── -->
+<div id="s-loading" class="screen active">
+  <div class="loading-inner">
+    <div class="loading-logo">Tri<span>Eval</span></div>
+    <div class="spinner"></div>
+    <div class="loading-msg" id="load-msg">Loading dataset…</div>
+    <div id="load-err" class="loading-error" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ── SETUP ── -->
+<div id="s-setup" class="screen">
+  <div class="setup-wrap">
+    <div class="wordmark">
+      <div class="wordmark-name">Tri<span>Eval</span></div>
+      <div class="wordmark-badge">Human Evaluation</div>
+    </div>
+
+    <div class="setup-heading">Image<br>Preference Study</div>
+    <div class="setup-sub">This is for a research project involving Shreyansh Modi, Akshat Tomar and Aarush Aggarwal. Kindly provide fair evaluations and refrain from spamming</div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-n">—</div>
+        <div class="stat-lbl">Total triples</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-sess">50</div>
+        <div class="stat-lbl">This session</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-time">25</div>
+        <div class="stat-lbl">Est. minutes</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Your Annotator ID</label>
+      <input type="text" id="inp-rater" placeholder="e.g. rater_01" autocomplete="off" />
+      <div class="field-hint">Used to track your responses in the sheet</div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Task mode</label>
+        <select id="inp-mode">
+          <option value="rank3">Full rank (1st → 3rd)</option>
+          <option value="best">Pick best only</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Samples per session</label>
+        <input type="number" id="inp-count" value="50" min="5" max="500" />
+        <div class="field-hint">Recommended: 50</div>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startSession()">Start Evaluation →</button>
+  </div>
+</div>
+
+<!-- ── EVAL ── -->
+<div id="s-eval" class="screen">
+  <header class="eval-header">
+    <div class="eh-left">
+      <div class="eh-logo">Tri<span>Eval</span></div>
+      <div class="eh-rater" id="hdr-rater"></div>
+    </div>
+    <div class="eh-progress">
+      <div class="eh-prog-row">
+        <span class="eh-prog-label" id="prog-label">0 / 0</span>
+        <span class="eh-prog-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
+    </div>
+    <div class="eh-right">
+      <span class="kbd">1</span><span class="kbd">2</span><span class="kbd">3</span>
+      <span class="kbd-hint">rank</span>
+      <span style="margin:0 4px;color:var(--dim)">|</span>
+      <span class="kbd">→</span>
+      <span class="kbd-hint">next</span>
+    </div>
+  </header>
+
+  <div class="eval-body">
+    <div class="context-bar" id="ctx-bar" style="display:none">
+      <span class="context-tag">Prompt</span>
+      <span class="context-text" id="ctx-text"></span>
+    </div>
+
+    <div class="eval-question" id="eval-q"></div>
+
+    <div class="image-grid" id="img-grid"></div>
+
+    <div class="eval-actions">
+      <div class="eval-meta">
+        <div class="meta-tag">Sample <span id="meta-n"></span></div>
+        <div class="meta-tag">ID <span id="meta-id"></span></div>
+        <div class="saving-indicator" id="save-ind" style="display:none">
+          <div class="saving-dot"></div>
+          <span id="save-txt">saving…</span>
+        </div>
+      </div>
+      <div class="actions-right">
+        <button class="btn-skip" onclick="skipItem()">Skip</button>
+        <button class="btn-next" id="btn-next" onclick="confirmAndNext()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DONE ── -->
+<div id="s-done" class="screen">
+  <div class="done-card">
+    <div class="done-check">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="done-title">Session complete!</div>
+    <div class="done-sub" id="done-sub"></div>
+
+    <div class="done-stats stat-row" id="done-stats"></div>
+
+    <div class="divider"></div>
+
+    <div class="win-section">
+      <div class="win-section-title">Win rate by original position</div>
+      <div id="win-rows"></div>
+    </div>
+
+    <div class="divider"></div>
+    <button class="btn-secondary" onclick="exportJSON()">⬇ Export JSON backup</button>
+    <button class="btn-secondary" onclick="exportCSV()">⬇ Export CSV backup</button>
+    <button class="btn-start" style="margin-top:4px" onclick="location.reload()">New session →</button>
+    <div class="sync-note" id="sync-note"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
